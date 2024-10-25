@@ -1,0 +1,65 @@
+projeto dashboard
+
+- Tratar requisição de rotas, verificar Role do usuario para permitir acesso
+- Criar Slots no NavBar para exibir funções para usuario logado e nao logado
+
+Entidades Sistema:
+
+menus:
+- id
+- nome
+- descricao
+- permissao
+- icon
+- url
+
+notificacoes:
+- id
+- usuario_id
+- titulo
+- mensagem
+- icon
+- url
+- isRead
+
+configuracoes:
+- id
+- usuario_id
+- isDarkMode
+
+Entidades Negócio:
+
+usuarios:
+- Id
+- Nome
+- Role
+- Login
+- Senha
+- Telefone
+- Endereco
+- url
+- icon
+
+projetos:
+- id
+- nome
+- usuario_id
+- url
+- icon
+
+tarefas:
+- id
+- nome
+- descricao
+- usuario_id
+- status
+- url
+- icon
+
+time_tracker:
+- id
+- tarefa_id
+- usuario_id
+- inicio
+- fim
+
