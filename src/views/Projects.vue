@@ -151,46 +151,6 @@ const openTimeline = (project) => {
             action: 'Alteração',
             title: project.title
         },
-        {
-            id: 3,
-            projectId: project.id,
-            date: '21/09/2024',
-            hour: '9:48',
-            action: 'Alteração',
-            title: project.title
-        },
-        {
-            id: 3,
-            projectId: project.id,
-            date: '21/09/2024',
-            hour: '9:48',
-            action: 'Alteração',
-            title: project.title
-        },
-        {
-            id: 3,
-            projectId: project.id,
-            date: '21/09/2024',
-            hour: '9:48',
-            action: 'Alteração',
-            title: project.title
-        },
-        {
-            id: 3,
-            projectId: project.id,
-            date: '21/09/2024',
-            hour: '9:48',
-            action: 'Alteração',
-            title: project.title
-        },
-        {
-            id: 3,
-            projectId: project.id,
-            date: '21/09/2024',
-            hour: '9:48',
-            action: 'Alteração',
-            title: project.title
-        },
     ]
 
     isTimelineOpen.value = !isTimelineOpen.value

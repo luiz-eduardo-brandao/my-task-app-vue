@@ -1,41 +1,54 @@
 <template>
-    <div class="h-screen mb-10">
+    <div class="h-full mb-10">
         <h1 class="font-weight-light">Suas Tarefas!</h1>
         
         <v-divider class="my-6"></v-divider>
         
         <v-container>
             <v-row justify="center">
-                <v-text-field 
+                <!-- <v-text-field 
                     class="px-3 mx-2"
                     label="Pesquisar"
                     variant="outlined"
-                ></v-text-field>
+                ></v-text-field> -->
+                <!-- <v-btn icon="mdi-magnify" class="mx-2"></v-btn> -->
                 <v-select
+                    width="300px"
                     class="mr-3"
                     label="Projetos"
+                    type="block"
                     variant="outlined"
                     :items="projects"
+                    v-model="projectSelected"
                 ></v-select>
-            
-                <v-btn icon="mdi-magnify" class="mx-2"></v-btn>
 
+                <v-btn
+                    @click="removeFilter"
+                    variant="text"
+                    class="mt-2 mx-3"
+                    icon="mdi-close"
+                ></v-btn>
+            
                 <v-spacer></v-spacer>
+            
                 <div class="d-flex justify-center ">
                     <v-btn align="center"
-                        class="mt-3 mr-3"
+                        class="mt-2 mr-3"
                         variant="tonal" 
                         color="primary"
                         to="/new-task"
+                        size="large"
                     >
-                        Nova Tarefa <v-icon  class="ml-2" icon="mdi-plus"></v-icon>
+                        Criar Tarefa 
+                        <!-- <v-icon  class="ml-2" icon="mdi-plus"></v-icon> -->
                     </v-btn>
-                    <div class="d-flex justify-center flex-column mx-4 text-subtitle-2 font-weight-light">
+                    <div class="d-flex justify-center flex-column 
+                        mx-4 text-subtitle-2 font-weight-light">
                         <v-switch 
                             v-model="listType"
                             @click="store.setListType()"
                             theme="light"
-                            color="purple-darken-2"
+                            color="blue"
                             base-color="blue"
                             false-icon="mdi-view-dashboard"
                             true-icon="mdi-format-list-bulleted"
@@ -187,7 +200,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch} from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/TaskStore'
 import { useProjectStore } from '@/stores/ProjectStore'
@@ -205,6 +218,14 @@ const callRoute = (routeName) => {
 let listType = computed(() => store.getListType())
 let projects = computed(() => projectStore.getProjectsList())
 
+let projectSelected = ref(null)
+
+watch(projectSelected, () => {
+    if (projectSelected.value != null && projectSelected.value != '') {
+        filterTasks(projectSelected.value)
+    } 
+})
+
 const openEditTask = (task) => {
     console.log('openEditTask', task)
 
@@ -213,7 +234,19 @@ const openEditTask = (task) => {
     callRoute('/task')
 }
 
-let taskList = computed(() => store.getTasksList())
+const filterTasks = (projectName) => {
+    console.log('projectName: ', projectName)
+
+    store.setTasksListFilter(t => t.projectTitle == projectName)
+}
+
+const removeFilter = () => {
+    projectSelected.value = null
+
+    store.removeTasksListFilter()
+}
+
+let taskList = computed(() => store.getTasksListFiltered)
 
 let taskListHeader = ref([
     {

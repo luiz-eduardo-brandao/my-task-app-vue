@@ -17,7 +17,7 @@
             <v-row>
                 <v-col cols="12" md="6">
                     <v-text-field 
-                        :model-value="project.title"
+                        v-model="project.title"
                         label="Título" 
                         placeholder="Digite o nome de usuário..."
                     ></v-text-field>
@@ -27,7 +27,7 @@
                 <v-col cols="12" md="6">
                     <v-textarea
                     label="Descrição"
-                    :model-value="project.description"
+                    v-model="project.description"
                     name="input-7-1"
                     variant="filled"
                     auto-grow
@@ -41,7 +41,7 @@
                     class="mr-3"
                     label="Dificuldade"
                     variant="outlined"
-                    model-value="Médio"
+                    v-model="project.level"
                     :items="['Fácil', 'Médio', 'Difícil']"
                 ></v-select>
                 </v-col>
@@ -50,59 +50,22 @@
                         :model-value="project.createdAt"
                         label="Data Criação" 
                         placeholder="Digite o nome de usuário..."
+                        readonly
                     ></v-text-field>
-                </v-col>
-            </v-row>
-
-            <v-row>
-                <v-col cols="12" md="6">
-                    <div class="d-flex py-2">
-                        <h3 class="font-weight-light">Colaboradores:</h3>
-                        <v-spacer></v-spacer>
-                        <v-btn 
-                            variant="tonal" 
-                            color="primary"
-                            size="small"
-                            icon="mdi-plus"
-                        ></v-btn>
-                    </div>
-                    <v-table>
-                        <thead>
-                            <tr>
-                                <th v-for="header in userHeader" :key="header.key">
-                                    {{ header.title }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr 
-                                class="cursor-pointer table-line"
-                                v-ripple
-                                v-for="item in userList"
-                                :key="item.id"
-                            >
-                                <td>{{ item.nome }}</td>
-                                <td>{{ item.email }}</td>
-                                <td>
-                                    <v-chip 
-                                        variant="text" 
-                                        size="small"
-                                        class="cursor-pointer font-weight-bold"
-                                        :color="item.role == 'Admin' ? 'green' : 'grey'"
-                                    >
-                                        {{ item.role }}
-                                    </v-chip>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </v-table>
                 </v-col>
             </v-row>
 
             <v-row class="mt-8">
                 <v-col cols="12" md="6">
-                    <h3 class="font-weight-light">Tarefas:</h3>
-                    <v-table>
+                    <h3 class="font-weight-light mb-3">Tarefas:</h3>
+                    <v-card v-if="project.tasks == 0"
+                        class="w-100 py-8 text-center"
+                    >
+                        <p>
+                        Você ainda não possui tarefas. Crie agora!
+                        </p>
+                    </v-card>
+                    <v-table v-else>
                         <thead>
                             <tr>
                                 <th v-for="header in taskListHeader" :key="header.key">
@@ -114,7 +77,7 @@
                             <tr 
                                 class="cursor-pointer table-line"
                                 v-ripple
-                                v-for="item in taskList"
+                                v-for="item in project.tasks"
                                 :key="item.id"
                             >
                                 <td>{{ item.id }}</td>
@@ -134,10 +97,10 @@
                         class="mr-4"
                         variant="tonal" 
                         color="primary"
-                        :loading="saveLoading"
+                        :loading="updateLoading"
                         size="large"
                         :disabled="deleteLoading"
-                        @click="save"
+                        @click="update"
                     >Salvar Alterações</v-btn>
                     <v-btn 
                         variant="tonal" 
@@ -154,9 +117,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue' 
+import { ref, onMounted } from 'vue' 
 import { useRouter } from 'vue-router'
 import { useProjectStore } from '@/stores/ProjectStore'
+
+import projectService from '@/services/projectService'
+
+import { useSnackBarStore } from '@/stores/SnackBarStore'
+const snackStore = useSnackBarStore()
 
 const router = useRouter()
 
@@ -202,50 +170,8 @@ onMounted(() => {
     console.log('oi: ', project.value)
 })
 
-let saveLoading = ref(false)
+let updateLoading = ref(false)
 let deleteLoading = ref(false)
-
-let userList = ref([
-    { id: 1, nome: 'Eduardo', email: 'edu@gmail.com', role: 'Admin'},
-    { id: 2, nome: 'Jorge', email: 'jorge@gmail.com', role: 'Guest'},
-    { id: 3, nome: 'Rafael', email: 'rafael@gmail.com', role: 'Guest'},
-])
-
-let userHeader = ref([
-    { key: 'nome', title: 'Nome'},
-    { key: 'email', title: 'Email'},
-    { key: 'role', title: 'Cargo'}
-])
-
-let taskList = ref([
-    {
-        id: 1,
-        title: 'Desenvolver rota de login',
-        description: 'Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui.',
-        projectId: 1,
-        projectTitle: 'Projeto Desenvolvimento - AR23',
-        timeConsumed: '01:00',
-        startDate: '27/09/2024 03:00',
-    },
-    {
-        id: 2,
-        title: 'Desenvolver rota de login',
-        description: 'Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui.',
-        projectId: 1,
-        projectTitle: 'Projeto Desenvolvimento - AR23',
-        timeConsumed: '01:00',
-        startDate: '27/09/2024 03:00',
-    },
-    {
-        id: 3,
-        title: 'Desenvolver rota de login',
-        description: 'Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui.',
-        projectId: 1,
-        projectTitle: 'Projeto Desenvolvimento - AR23',
-        timeConsumed: '01:00',
-        startDate: '27/09/2024 03:00',
-    }
-])
 
 let taskListHeader = ref([
     {
@@ -259,19 +185,64 @@ let taskListHeader = ref([
     { key: 'endDate', title: 'Fim' },
 ])
 
-const save = () => {
-    saveLoading.value = true
+const update = async () => {
+    updateLoading.value = true
 
-    setTimeout(() => {
-        saveLoading.value = false
-    }, 2000)
+    let updateProjectInputModel = {
+        id: project.value.id,
+        title: project.value.title,
+        description: project.value.description,
+        level: project.value.level,
+    }
+
+    console.log('updateProjectInputModel:', updateProjectInputModel)
+
+    try {
+        var response = await projectService.update(updateProjectInputModel)
+
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'green-darken-3',
+            message: 'Projeto alterado com sucesso!'
+        })
+
+        updateLoading.value = false
+    } catch (error) {
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'red-darken-3',
+            message: error
+        })
+
+        updateLoading.value = false
+    }
 }
 
-const deleteProject = () => {
+const deleteProject = async () => {
     deleteLoading.value = true
 
-    setTimeout(() => {
+    console.log('selected project:', project.value.id)
+
+    try {
+        var response = await projectService.delete(project.value.id)
+
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'green-darken-3',
+            message: 'Projeto excluído com sucesso'
+        })
+
+        callRoute('/projects')
+
         deleteLoading.value = false
-    }, 2000)
+    } catch (error) {
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'red-darken-3',
+            message: error
+        })
+
+        deleteLoading.value = false
+    }
 }
 </script>

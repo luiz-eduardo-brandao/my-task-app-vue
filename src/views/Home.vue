@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="h-full">
         <h1 class="font-weight-light mb-6">
           <span v-if="user">Bem-vindo de volta, {{ user.nome }}!</span>
           <span v-else>Bem-vindo!</span>
@@ -21,7 +21,14 @@
         <v-divider class="mb-10"></v-divider>
 
         <v-row justify="center" class="mt-6 mb-10">
-          <v-slide-group
+          <v-card v-if="projects.length == 0"
+            class="w-100 py-8 text-center"
+          >
+            <p>
+              Você ainda não possui projetos. Crie agora!
+            </p>
+          </v-card>
+          <v-slide-group v-else
             class="pa-4"
             center-active
             show-arrows
@@ -119,8 +126,7 @@
             </v-card>
           </v-col> -->
         </v-row>    
-
-        
+       
         <div class="d-flex mt-10 mb-2">
           <a href="/tasks" class="text-decoration-none">
             <h2 class="font-weight-light">Tarefas em andamento:</h2>
@@ -136,7 +142,12 @@
         <v-divider class="mb-10"></v-divider>
 
         <v-card class="mb-10">
-          <v-card-text>
+          <v-row v-if="taskList.length == 0" justify="center" class="mt-6 mb-10">
+            <p>
+              Você ainda não possui tarefas. Crie agora!
+            </p>
+          </v-row>
+          <v-card-text v-else>
             <v-table>
                 <thead>
                     <tr>

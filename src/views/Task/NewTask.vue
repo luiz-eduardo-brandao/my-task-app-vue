@@ -20,11 +20,7 @@
                     class="mr-3"
                     label="Projetos"
                     variant="outlined"
-                    :items="[
-                        'Projeto Desenvolimento 1',
-                        'Projeto Desenvolimento 2',
-                        'Projeto Desenvolimento 3'
-                    ]"
+                    :items="projects"
                 ></v-select>
                 </v-col>
             </v-row>
@@ -47,7 +43,7 @@
                 </v-col>
             </v-row>
 
-            <v-row>
+            <!-- <v-row>
                 <v-col cols="12" md="3">
                     <v-text-field 
                         label="Data Ínicio" 
@@ -58,7 +54,7 @@
                         label="Data Fim" 
                     ></v-text-field>
                 </v-col>
-            </v-row>
+            </v-row> -->
 
             <v-row class="mt-10">
                 <v-col>
@@ -66,7 +62,6 @@
                         class="mr-4"
                         variant="tonal" 
                         color="primary"
-                        :loading="loginLoading"
                         size="large"
                     >Criar Tarefa</v-btn>
                 </v-col>
@@ -74,3 +69,13 @@
         </div>
     </div>
 </template>
+
+<script setup>
+import { computed } from 'vue'
+import { useProjectStore } from '@/stores/ProjectStore'
+
+const projectStore = useProjectStore()
+
+let projects = computed(() => projectStore.getProjectsList())
+
+</script>

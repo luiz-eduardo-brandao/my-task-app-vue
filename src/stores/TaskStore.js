@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useTaskStore = defineStore('task', () => {
     //state
     let listType = ref(false)
     let taskSelected = ref(null)
     let tasksList = ref([])
+    let tasksListFilter = ref(() => true)
 
     // let taskList = ref([
     //     {
@@ -50,11 +51,25 @@ export const useTaskStore = defineStore('task', () => {
         tasksList.value = list
     }
 
+    const setTasksListFilter = (newFilter) => {
+        tasksListFilter.value = newFilter
+    }
+
+    const removeTasksListFilter = () => {
+        tasksListFilter.value = () => true
+    }
+
     // getters
     const getTaskSelected = () => taskSelected.value
     const getListType = () => listType.value
     const getTasksList = () => tasksList.value
 
+    const getTasksListFiltered = computed(() => {
+        console.log('tasksListFilter: ', tasksListFilter.value)
+        console.log('tasksList: ', tasksList.value.filter(tasksListFilter.value))
+
+        return tasksList.value.filter(tasksListFilter.value)
+    })
 
     return {
         getListType,
@@ -62,7 +77,10 @@ export const useTaskStore = defineStore('task', () => {
         setListType,
         getTaskSelected,
         getTasksList,
-        setTasksList
+        setTasksList,
+        setTasksListFilter,
+        getTasksListFiltered,
+        removeTasksListFilter
     }
 
 })

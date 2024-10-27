@@ -146,14 +146,10 @@ const login = async () => {
             throw 'Usuário ou senha incorretos'
 
         // let request = {
-
         // }
-
         // var response = await userService.login(request)
-
         // if (response.Result)
         //     userStore.setUser(response.User)
-
         // throw response.MsgError
 
         let user = {
