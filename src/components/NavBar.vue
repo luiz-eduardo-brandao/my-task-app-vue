@@ -10,11 +10,21 @@
       
       <v-app-bar-title>
         <div 
-          @click="callRoute('/')"
           variant="text" 
-          class="d-flex cursor-pointer"
+          class="d-flex"
         >
-          <h3 class="font-weight-light">MyTask App</h3>
+          <h3 
+            class="font-weight-light cursor-pointer d-flex"
+            @click="callRoute('/')"
+          >
+          <v-img
+            class="mr-3 mt-1"
+            height="20"
+            width="20"
+            src="../assets/logo-task.png"
+          ></v-img>
+            MyTask - App
+          </h3>
         </div>
       </v-app-bar-title>
 

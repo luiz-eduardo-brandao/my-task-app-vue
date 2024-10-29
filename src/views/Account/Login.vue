@@ -27,8 +27,8 @@
                         @submit.prevent="login">
                         <v-card-text class="mt-4">
                             <v-text-field 
-                                v-model="username"
-                                label="Username" 
+                                v-model="email"
+                                label="Email" 
                                 :rules="usernameRules"
                             ></v-text-field>
             
@@ -120,7 +120,7 @@ const passwordRules = ref([
 ])
 
 let form = ref(false)
-let username = ref(null)
+let email = ref(null)
 let password = ref(null)
 let isPermanent = ref(false)
 
@@ -136,54 +136,51 @@ let loginLoading = ref(false)
 const login = async () => {    
     if (!form) return
     
-    if (!username.value || username.value == '') return
+    if (!email.value || email.value == '') return
     if (!password.value || password.value == '') return
 
     loginLoading.value = true
 
     try {
-        if ( username.value != 'edu' || password.value != '123')
-            throw 'Usuário ou senha incorretos'
+        // if ( email.value != 'edu' || password.value != '123')
+        //     throw 'Usuário ou senha incorretos'
 
-        // let request = {
-        // }
-        // var response = await userService.login(request)
-        // if (response.Result)
-        //     userStore.setUser(response.User)
-        // throw response.MsgError
-
-        let user = {
-            id: 1,
-            nome: 'Edu',
-            email: 'edu@gmail.com',
-            role: 'Admin',
-            accessToken: 'dfauwhdu12bn1u2bn12hn1ij21inm2i1n',
-            isPermanent: isPermanent.value,
-            image: '@/assets/user-edu.jpg'
+        let loginRequest = {
+            email: email.value,
+            password: password.value
         }
 
-        let response = await userService.getById(2)
+        var user = await userService.login(loginRequest)
 
-        let tasks = await userService.getTasksByUserId(2)
+        if (user) {
+            user.isPermanent = isPermanent.value,
+            user.image = '@/assets/user-edu.jpg' 
 
-        console.log('response: ', response)
-        console.log('tasks: ', tasks)
-
-        projectStore.setProjectList(response.projects)
-        tasksStore.setTasksList(tasks)
-
-        setTimeout(() => {
-            callRoute('/')  
+            localStorage.setItem('token', user.token)
+            
             userStore.setUser(user)
 
-            // let projects = await service.getProjects(user.id);
-            // let tasks = await service.getTasks(user.id);
-
-            // userStore.setProjects(projects)
-            // userStore.setTasks(tasks)
+            let tasks = await userService.getTasksByUserId(user.id)
             
-            loginLoading.value = false  
-        }, 2000)   
+            projectStore.setProjectList(user.projects)
+            tasksStore.setTasksList(tasks)
+
+            callRoute('/')  
+            
+            loginLoading.value = false 
+        } else {
+            throw 'Usuário ou senha incorretos'
+        }
+
+        // let user = {
+        //     id: 1,
+        //     nome: 'Edu',
+        //     email: 'edu@gmail.com',
+        //     role: 'Admin',
+        //     accessToken: 'dfauwhdu12bn1u2bn12hn1ij21inm2i1n',
+        //     isPermanent: isPermanent.value,
+        //     image: '@/assets/user-edu.jpg'
+        // }
     } catch (error) {
         snackStore.setSnackBar({
             time: 5000,

@@ -6,7 +6,7 @@
                 lines="two"
                 prepend-avatar="../assets/user-edu.jpg"
                 :subtitle="user ? user.email : ''"
-                :title="user ? user.nome : ''"
+                :title="user ? user.fullName : ''"
             ></v-list-item>
             <v-spacer></v-spacer>            
             <v-app-bar-nav-icon class="mr-3" @click="$emit('toggleDrawer')"></v-app-bar-nav-icon>

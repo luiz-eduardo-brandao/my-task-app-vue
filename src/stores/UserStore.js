@@ -58,7 +58,7 @@ export const useUserStore = defineStore('user', () => {
 
         if (user.value.isPermanent) {
             localStorage.setItem('user', JSON.stringify(user.value))
-            setToken(user.value.accessToken)
+            setToken(user.value.token)
         }
     }   
 

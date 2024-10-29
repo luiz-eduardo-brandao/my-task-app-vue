@@ -69,7 +69,112 @@
                     :key="item.id"
                     @click="openEditTask(item)"
                 >
-                    <v-card 
+                <v-card
+                    :disabled="loading"
+                    :loading="loading"
+                    class="mx-auto my-12 cursor-pointer"
+                    v-ripple
+                    max-width="374"
+                    min-height="574"
+                >
+                    <v-img
+                    height="180"
+                    src="https://images.pexels.com/photos/796602/pexels-photo-796602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    cover
+                    ></v-img>
+
+                    <v-card-item>
+                    <v-card-title>{{ item.title  }}</v-card-title>
+
+                    <v-card-subtitle>
+                        <span class="me-1">{{ item.projectTitle }}</span>
+
+                            <v-icon
+                            color="error"
+                            icon="mdi-fire-circle"
+                            size="small"
+                            ></v-icon>
+                        </v-card-subtitle>
+                        </v-card-item>
+
+                        <v-card-text>
+                        <!-- <v-row
+                            align="center"
+                            class="mx-0"
+                        >
+                            <v-rating
+                            :model-value="4.5"
+                            color="amber"
+                            density="compact"
+                            size="small"
+                            half-increments
+                            readonly
+                            ></v-rating>
+
+                            <div class="text-grey ms-4">
+                            4.5 (413)
+                            </div>
+                        </v-row> -->
+
+                        <div class="my-2 mt-3 text-subtitle-1">
+                           <p>Descrição:</p>
+                        <!-- </div>
+
+                        <div> -->
+                            {{ item.description }}
+                        </div>
+                        </v-card-text>
+
+                        <v-divider class="mx-4 mb-1"></v-divider>
+
+                        <v-card-title>Tempo:</v-card-title>
+
+                        <div class="px-4 my-3 mb-2">
+                            <v-row justify="center">
+                                <v-chip 
+                                class="mx-2 my-2"
+                                @click.stop=""
+                                >Início: {{ item.startedAt }}
+                                </v-chip>
+                                
+                                <v-chip 
+                                class="mx-2 my-2"
+                                @click.stop=""
+                                >Fim: {{ item.finishedAt }}
+                                </v-chip>
+                            </v-row>
+                        </div>
+
+
+                        <v-divider class="mx-4 mb-1 mt-5"></v-divider>
+
+                        <v-card-actions>
+                            <v-row justify="center">
+                                <v-btn 
+                                class="" 
+                                base-color="blue" 
+                                append-icon="mdi-play-outline"
+                                @click.stop=""
+                                >Iniciar</v-btn>
+                                
+                                <v-btn 
+                                class="" 
+                                base-color="blue" 
+                                prepend-icon="mdi-pause"
+                                @click.stop=""
+                                >Parar</v-btn>
+                            </v-row>
+                        <!-- <v-btn
+                            color="deep-purple-lighten-2"
+                            
+                            text="Iniciar"
+                            block
+                            border
+                        ></v-btn> -->
+                        </v-card-actions>
+                    </v-card>
+
+                    <!-- <v-card 
                         v-ripple 
                         class="cursor-pointer" 
                     >
@@ -114,7 +219,7 @@
                                 <v-btn class="mx-2" variant="tonal" color="red">Excluir</v-btn>
                             </v-row>
                         </v-card-actions>
-                    </v-card>
+                    </v-card> -->
                 </v-col>
             </v-row>
             <v-row v-else>  
@@ -156,8 +261,8 @@
                                                 </v-chip>
                                             </td>
                                             <td>{{ item.timeConsumed }}</td>
-                                            <td>{{ item.startDate }}</td>
-                                            <td>{{ item.endDate }}</td>
+                                            <td>{{ item.startedAt }}</td>
+                                            <td>{{ item.finishedAt }}</td>
                                            
                                             <td>
                                                 <v-btn 

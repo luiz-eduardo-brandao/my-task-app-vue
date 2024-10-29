@@ -1,7 +1,7 @@
 <template>
     <div class="h-full">
         <h1 class="font-weight-light mb-6">
-          <span v-if="user">Bem-vindo de volta, {{ user.nome }}!</span>
+          <span v-if="user">Bem-vindo de volta, {{ user.fullName }}!</span>
           <span v-else>Bem-vindo!</span>
         </h1>
         
@@ -208,8 +208,10 @@ onMounted(async () => {
   projectStore = useProjectStore()
   taskStore = useTaskStore()
 
-  let response = await userService.getById(2)
-  let tasks = await userService.getTasksByUserId(2)
+  let user = userStore.getUser()
+
+  let response = await userService.getById(user.id)
+  let tasks = await userService.getTasksByUserId(user.id)
 
   projectStore.setProjectList(response.projects)
   taskStore.setTasksList(tasks)

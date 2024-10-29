@@ -56,7 +56,7 @@
             <v-card-text>
                 <div class="d-flex flex-column">
                     <h2 class="font-weight-light">
-                        {{ user.nome }}
+                        {{ user.fullName }}
                     </h2>
                     <h3 class="text-subtitle-1">
                         {{ user.email }}  
