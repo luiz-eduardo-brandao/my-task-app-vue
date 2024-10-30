@@ -20,82 +20,84 @@
         </div>
         <v-divider class="mb-10"></v-divider>
 
+        <v-row 
+          justify="center" 
+          class="mt-6 mb-10"
+          v-if="projects.length == 0"
+        >
+          <v-card class="w-100 py-8 text-center">
+              <p>
+                Você ainda não possui projetos. Crie agora!
+              </p>
+            </v-card>
+        </v-row>
+
         <v-row justify="center" class="mt-6 mb-10">
-          <v-card v-if="projects.length == 0"
-            class="w-100 py-8 text-center"
-          >
-            <p>
-              Você ainda não possui projetos. Crie agora!
-            </p>
-          </v-card>
-          <v-slide-group v-else
-            class="pa-4"
-            center-active
-            show-arrows
-            max-width="800"
-          >
-            <v-slide-group-item
-              v-for="project in projects" 
-              :key="project.id" 
-              v-ripple
+            <v-slide-group class="pa-4"
+              center-active
+              show-arrows
+              max-width="800"
             >
-              <v-card 
-                flat 
-                v-ripple
-                min-width="300"
-                class="border cursor-pointer mx-3" 
-                @click="openProject(project)"
-              >
-                <v-img 
-                  class="align-end text-white border-rounded"
-                  :src="project.image"
-                  cover
-                  
-                  min-width="300"
-                  max-height="220"
-                  max-width="280"
-                >
-                  <v-card-title class="bg-black text-overline ext-medium-emphasis
-                  text-wrap">{{ project.title }}</v-card-title>
-                </v-img>
-                
-                <v-card-subtitle class="pt-3 text-wrap">
-                  <div class="d-flex">
-                    {{ project.userName }}
-                    <v-spacer></v-spacer>
-                    <v-rating
-                      :model-value="project.level"
-                      color="orange-darken-2"
-                      density="compact"
-                      size="small"
-                      readonly
-                    ></v-rating>
-                  </div>
-                </v-card-subtitle>
-
-                <v-card-text>
-                  <div>{{ project.description }}</div>
-                </v-card-text>
-
-                <v-card-text class="text-wrap">
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-btn 
-                    variant="outlined" 
-                    color="primary"
-                    @click.stop="openProject(project)"
-                  >Editar</v-btn>
-                  <v-btn 
-                    append-icon="mdi-calendar-check" 
-                    variant="tonal" 
-                    color="blue"
-                    @click.stop="callRoute('/tasks')"
-                  >Tarefas</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-slide-group-item>
-          </v-slide-group>
+              <template v-for="project in projects" :key="project.id">
+                <v-slide-group-item v-ripple>
+                  <v-card 
+                    flat 
+                    v-ripple
+                    min-width="300"
+                    class="border cursor-pointer mx-3" 
+                    @click="openProject(project)"
+                  >
+                    <v-img 
+                      class="align-end text-white border-rounded"
+                      :src="project.image"
+                      cover
+                      
+                      min-width="300"
+                      max-height="220"
+                      max-width="280"
+                    >
+                      <v-card-title class="bg-black text-overline ext-medium-emphasis
+                      text-wrap">{{ project.title }}</v-card-title>
+                    </v-img>
+                    
+                    <v-card-subtitle class="pt-3 text-wrap">
+                      <div class="d-flex">
+                        {{ project.userName }}
+                        <v-spacer></v-spacer>
+                        <v-rating
+                          :model-value="project.level"
+                          color="orange-darken-2"
+                          density="compact"
+                          size="small"
+                          readonly
+                        ></v-rating>
+                      </div>
+                    </v-card-subtitle>
+    
+                    <v-card-text>
+                      <div>{{ project.description }}</div>
+                    </v-card-text>
+    
+                    <v-card-text class="text-wrap">
+                    </v-card-text>
+    
+                    <v-card-actions>
+                      <v-btn 
+                        variant="outlined" 
+                        color="primary"
+                        @click.stop="openProject(project)"
+                      >Editar</v-btn>
+                      <v-btn 
+                        append-icon="mdi-calendar-check" 
+                        variant="tonal" 
+                        color="blue"
+                        @click.stop="callRoute('/tasks')"
+                      >Tarefas</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-slide-group-item>
+              </template>
+            </v-slide-group>
 
           <!-- <v-col 
             v-for="project in recentProjects" :key="project.id" 
@@ -193,29 +195,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted  } from 'vue'
+import { ref, computed  } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/UserStore'
 import { useProjectStore } from '@/stores/ProjectStore'
 import { useTaskStore } from '@/stores/TaskStore'
-import userService from '@/services/userService'
 
 let userStore = useUserStore()
 let projectStore = useProjectStore()
 let taskStore = useTaskStore()
-
-onMounted(async () => {
-  projectStore = useProjectStore()
-  taskStore = useTaskStore()
-
-  let user = userStore.getUser()
-
-  let response = await userService.getById(user.id)
-  let tasks = await userService.getTasksByUserId(user.id)
-
-  projectStore.setProjectList(response.projects)
-  taskStore.setTasksList(tasks)
-})
 
 const router = useRouter()
 

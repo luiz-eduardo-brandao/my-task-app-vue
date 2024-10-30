@@ -7,7 +7,15 @@
             class="mt-5"
         >
             <div class="d-flex justify-center">
-                <h1 class="font-weight-light">MyTask App</h1>
+                <h1 class="font-weight-light d-flex">
+                    <v-img
+                        class="mr-3 mt-3"
+                        height="20"
+                        width="20"
+                        src="../../assets/logo-task.png"
+                    ></v-img>
+                    MyTask App
+                </h1>
             </div>
         </v-col>
         <v-col
@@ -26,6 +34,16 @@
                         <v-text-field 
                             label="Username" 
                             placeholder="Digite o nome de usuário..."
+                        ></v-text-field>
+
+                        <v-text-field
+                            class="mt-3" 
+                            label="Telefone" 
+                        ></v-text-field>
+
+                        <v-text-field
+                            class="mt-3" 
+                            label="Data de Nascimento" 
                         ></v-text-field>
                 
                         <v-text-field 
@@ -53,7 +71,7 @@
                             <v-btn 
                                 variant="tonal" 
                                 block 
-                                color="deep-purple-darken-1"
+                                color="purple"
                                 :loading="loginLoading"
                                 size="large"
                             >Criar Conta</v-btn>

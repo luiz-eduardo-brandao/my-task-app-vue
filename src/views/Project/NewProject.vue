@@ -120,7 +120,7 @@ let level = ref(null)
 let loading = ref(false)
 
 const submit = async () => {
-    if (!form) return
+    if (!form.value) return
     
     if (!title.value || title.value == '') return
     if (!description.value || description.value == '') return
@@ -141,15 +141,13 @@ const submit = async () => {
 
         var response = await projectService.create(createProjectInputModel)
 
-        console.log('Create Project: ', response)
-
-        loading.value = false 
-
         snackStore.setSnackBar({
             time: 5000,
             color: 'green-darken-3',
             message: 'Projeto criado com sucesso!'
         })
+
+        loading.value = false 
 
         callRoute('/projects')  
     } catch (error) {

@@ -1,5 +1,6 @@
-import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import taskService from '@/services/taskService'
 
 export const useTaskStore = defineStore('task', () => {
     //state
@@ -65,11 +66,18 @@ export const useTaskStore = defineStore('task', () => {
     const getTasksList = () => tasksList.value
 
     const getTasksListFiltered = computed(() => {
-        console.log('tasksListFilter: ', tasksListFilter.value)
-        console.log('tasksList: ', tasksList.value.filter(tasksListFilter.value))
-
         return tasksList.value.filter(tasksListFilter.value)
     })
+
+    async function loadTaskData() {
+        console.log('loadTaskData')
+
+        let idUser = localStorage.getItem('idUser')
+
+        var tasksList = await taskService.getAllByUserId(idUser)
+
+        setTasksList(tasksList)
+    }
 
     return {
         getListType,
@@ -80,7 +88,8 @@ export const useTaskStore = defineStore('task', () => {
         setTasksList,
         setTasksListFilter,
         getTasksListFiltered,
-        removeTasksListFilter
+        removeTasksListFilter,
+        loadTaskData
     }
 
 })

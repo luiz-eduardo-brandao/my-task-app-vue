@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '../stores/UserStore'
+import { useProjectStore } from '@/stores/ProjectStore'
+import { useTaskStore } from '@/stores/TaskStore'
 
 import Login from '../views/Account/Login.vue'
 import RegisterAccount from '../views/Account/RegisterAccount.vue'
@@ -103,18 +105,21 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-    console.log(to)
-
     if (to.meta?.authorize) {
         const userStore = useUserStore()
 
-        if (userStore.getIsAuthenticated()) {
-            console.log('aqui 2')
+        await userStore.loadUserData()
 
-            const isTokenValid = await userStore.checkToken();
-            console.log('aqui 5')
-        
+        if (userStore.getIsAuthenticated()) {
+            const isTokenValid = await userStore.checkUser();
+
             if (isTokenValid) {
+                const taskStore = useTaskStore()
+                let projectStore = useProjectStore()
+                
+                await projectStore.loadProjectData()
+                await taskStore.loadTaskData()
+
                 if (to.name == 'login') {
                     next({ name: 'home'})
                     return 

@@ -24,14 +24,4 @@ export default {
         })
         return data
     },
-    getTasksByUserId: async idUser => {
-        let token = localStorage.getItem('token')
-
-        const { data } = await HTTPClient.get('/tasks/user/' + idUser, {
-            headers: {
-                Authorization: 'Bearer ' + token
-            }
-        })
-        return data
-    }
 }

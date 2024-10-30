@@ -70,8 +70,6 @@
                     @click="openEditTask(item)"
                 >
                 <v-card
-                    :disabled="loading"
-                    :loading="loading"
                     class="mx-auto my-12 cursor-pointer"
                     v-ripple
                     max-width="374"
@@ -305,7 +303,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch} from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/TaskStore'
 import { useProjectStore } from '@/stores/ProjectStore'

@@ -1,7 +1,7 @@
 <template>
     <div class="h-full">
         <div class="d-flex">
-            <h1 class="font-weight-light">Titulo</h1>
+            <h1 class="font-weight-light">{{ staticTitle }}</h1>
             <v-spacer></v-spacer>
             <v-btn 
                 class="mr-4"
@@ -17,7 +17,7 @@
             <v-row>
                 <v-col cols="12" md="6">
                     <v-text-field 
-                        model-value="Titulo"
+                        v-model="task.title"
                         label="Título" 
                         placeholder="Digite o nome de usuário..."
                     ></v-text-field>
@@ -25,7 +25,12 @@
             </v-row>
             <v-row>
                 <v-col cols="12" md="6">
-                    <v-select
+                    <v-text-field 
+                        v-model="task.projectTitle"
+                        label="Projeto" 
+                        readonly
+                    ></v-text-field>
+                    <!-- <v-select
                     class="mr-3"
                     label="Projeto"
                     variant="outlined"
@@ -34,10 +39,10 @@
                         'Usuário 2', 
                         'Usuário 3'
                     ]"
-                ></v-select>
+                    ></v-select> -->
                 </v-col>    
             </v-row>
-            <v-row>
+            <!-- <v-row>
                 <v-col cols="12" md="6">
                     <v-text-field 
                         model-value="Eduardo"
@@ -46,12 +51,12 @@
                         readonly
                     ></v-text-field>
                 </v-col>    
-            </v-row>
+            </v-row> -->
             <v-row>
                 <v-col cols="12" md="6">
                     <v-textarea
                     label="Descrição"
-                    model-value="...."
+                    v-model="task.description"
                     name="input-7-1"
                     variant="filled"
                     auto-grow
@@ -62,9 +67,9 @@
             <v-row>
                 <v-col cols="12" md="3">
                     <v-text-field 
-                        model-value="08/10/2024 05:44 PM"
+                        v-model="task.createdAt"
                         label="Data Criação" 
-                        placeholder="Digite o nome de usuário..."
+                        readonly
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -72,16 +77,16 @@
             <v-row>
                 <v-col cols="12" md="3">
                     <v-text-field 
-                        model-value="08/10/2024 05:44 PM"
+                        v-model="task.startedAt"
                         label="Data Início" 
-                        placeholder="Digite o nome de usuário..."
+                        readonly
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="3">
                     <v-text-field 
-                        model-value="08/10/2024 05:44 PM"
+                        v-model="task.startedAt"
                         label="Data Fim" 
-                        placeholder="Digite o nome de usuário..."
+                        readonly=""
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -92,10 +97,10 @@
                         class="mr-4"
                         variant="tonal" 
                         color="primary"
-                        :loading="saveLoading"
+                        :loading="updateLoading"
                         size="large"
                         :disabled="deleteLoading"
-                        @click="save"
+                        @click="update"
                     >Salvar Alterações</v-btn>
                     <v-btn 
                         variant="tonal" 
@@ -103,7 +108,7 @@
                         :loading="deleteLoading"
                         size="large"
                         :disabled="saveLoading"
-                        @click="deleteProject"
+                        @click="deleteTask"
                     >Excluir</v-btn>
                 </v-col>
             </v-row>
@@ -114,29 +119,115 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue' 
+import { ref, computed, onMounted } from 'vue' 
+import taskService from '@/services/taskService'
+
 import { useTaskStore } from '@/stores/TaskStore'
 
-const taskStore = useTaskStore()
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const callRoute = (routeName) => router.push(routeName)
 
-let task = computed(() => taskStore.getTaskSelected())
+import { useSnackBarStore } from '@/stores/SnackBarStore'
+const snackStore = useSnackBarStore()
 
-let saveLoading = ref(false)
+let task = ref(
+{
+    id: null,
+    title: '',
+    description: '',
+    idUser: '',
+    idProject: '',
+    projectTitle: '',
+    createdAt: '',
+    startedAt: '',
+    finishedAt: '',
+})
+
+let staticTitle = ref('')
+
+onMounted(() => {
+    task.value = {
+        id: null,
+        title: '',
+        description: '',
+        idUser: '',
+        idProject: '',
+        projectTitle: '',
+        createdAt: '',
+        startedAt: '',
+        finishedAt: '',
+    }
+
+    const taskStore = useTaskStore()
+    var result = taskStore.getTaskSelected()
+
+    if (result == null) {
+        callRoute('/tasks')
+    }
+
+    task.value = taskStore.getTaskSelected()
+    staticTitle.value = task.value.title
+})
+
+let updateLoading = ref(false)
 let deleteLoading = ref(false)
 
-const save = () => {
-    saveLoading.value = true
+const update = async () => {
+    updateLoading.value = true
 
-    setTimeout(() => {
-        saveLoading.value = false
-    }, 2000)
+    let updateTaskInputModel = {
+        id: task.value.id,
+        title: task.value.title,
+        description: task.value.description,
+    }
+
+    console.log('updateTaskInputModel:', updateTaskInputModel)
+
+    try {
+        var response = await taskService.update(updateTaskInputModel)
+
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'green-darken-3',
+            message: 'Tarefa alterada com sucesso!'
+        })
+
+        updateLoading.value = false
+    } catch (error) {
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'red-darken-3',
+            message: error
+        })
+
+        updateLoading.value = false
+    }
 }
 
-const deleteProject = () => {
+const deleteTask = async () => {
     deleteLoading.value = true
 
-    setTimeout(() => {
+    try {
+        var response = await taskService.delete(task.value.id)
+
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'green-darken-3',
+            message: 'Tarefa excluída com sucesso'
+        })
+
+        callRoute('/tasks')
+
         deleteLoading.value = false
-    }, 2000)
+    } catch (error) {
+        snackStore.setSnackBar({
+            time: 5000,
+            color: 'red-darken-3',
+            message: error
+        })
+
+        deleteLoading.value = false
+    }
 }
 </script>

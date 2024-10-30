@@ -6,7 +6,7 @@ export default {
 
         console.log('token: ', token)
 
-        const { data } = await HTTPClient.get('/projects/user/' + idUser, {
+        const { data } = await HTTPClient.get('/tasks/user/' + idUser, {
             headers: {
                 Authorization: 'Bearer ' + token
             }
@@ -16,7 +16,7 @@ export default {
     create: async payload => {
         let token = localStorage.getItem('token')
 
-        const { data } = await HTTPClient.post('/projects', payload, {
+        const { data } = await HTTPClient.post('/tasks', payload, {
             headers: {
                 Authorization: 'Bearer ' + token
             }
@@ -26,7 +26,7 @@ export default {
     update: async payload => {
         let token = localStorage.getItem('token')
 
-        const { data } = await HTTPClient.put('/projects', payload, {
+        const { data } = await HTTPClient.put('/tasks', payload, {
             headers: {
                 Authorization: 'Bearer ' + token
             }
@@ -37,7 +37,29 @@ export default {
     delete: async id => {
         let token = localStorage.getItem('token')
 
-        const { data } = await HTTPClient.delete('/projects/' + id, {
+        const { data } = await HTTPClient.delete('/tasks/' + id, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        })
+        
+        return data
+    },
+    start: async id => {
+        let token = localStorage.getItem('token')
+
+        const { data } = await HTTPClient.put('/tasks/start/' + id, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        })
+        
+        return data
+    },
+    finish: async id => {
+        let token = localStorage.getItem('token')
+
+        const { data } = await HTTPClient.put('/tasks/finish/' + id, {
             headers: {
                 Authorization: 'Bearer ' + token
             }

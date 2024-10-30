@@ -22,11 +22,11 @@ if (localStorage.getItem('token')) {
     (async () => {
         try {
             const userStore = useUserStore();
-            const isAuthenticated = await userStore.checkToken();
+            const isAuthenticated = await userStore.checkUser();
 
             if (isAuthenticated) {                
-                let user = JSON.parse(localStorage.getItem('user'))
-                userStore.setUser(user)
+                // let user = JSON.parse(localStorage.getItem('user'))
+                userStore.loadUserData()
             }
             
         } catch (error) {

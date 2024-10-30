@@ -7,7 +7,15 @@
             class="mt-5"
         >
             <div class="d-flex justify-center">
-                <h1 class="font-weight-light">MyTask App</h1>
+                <h1 class="font-weight-light d-flex">
+                    <v-img
+                        class="mr-3 mt-3"
+                        height="20"
+                        width="20"
+                        src="../../assets/logo-task.png"
+                    ></v-img>
+                    MyTask - App
+                </h1>
             </div>
         </v-col>
         <v-col
@@ -80,7 +88,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import userService from '@/services/userService'
 import { useRouter } from 'vue-router'
 
 import { useSnackBarStore } from '@/stores/SnackBarStore'
@@ -89,14 +96,6 @@ import { useProjectStore } from '@/stores/ProjectStore'
 import { useTaskStore } from '@/stores/TaskStore'
 
 const snackStore = useSnackBarStore()
-
-const openSnack = () => {
-    snackStore.setSnackBar({
-        time: 5000,
-        color: 'purple-darken-3',
-        message: 'Teste 3'
-    })
-}
 
 const usernameRules = ref([
     value => {
@@ -129,7 +128,6 @@ const callRoute = (routeName) => router.push(routeName)
 
 const userStore = useUserStore()
 const projectStore = useProjectStore()
-const tasksStore = useTaskStore()
 
 let loginLoading = ref(false)
 
@@ -150,20 +148,10 @@ const login = async () => {
             password: password.value
         }
 
-        var user = await userService.login(loginRequest)
+        var user = await userStore.login(loginRequest, isPermanent.value)
 
         if (user) {
-            user.isPermanent = isPermanent.value,
-            user.image = '@/assets/user-edu.jpg' 
-
-            localStorage.setItem('token', user.token)
-            
-            userStore.setUser(user)
-
-            let tasks = await userService.getTasksByUserId(user.id)
-            
-            projectStore.setProjectList(user.projects)
-            tasksStore.setTasksList(tasks)
+            projectStore.loadProjectData()
 
             callRoute('/')  
             
@@ -185,7 +173,7 @@ const login = async () => {
         snackStore.setSnackBar({
             time: 5000,
             color: 'red-darken-3',
-            message: error
+            message: error.response.data
         })
 
         loginLoading.value = false 

@@ -1,7 +1,7 @@
 <template>
     <div class="h-full">
         <div class="d-flex">
-            <h1 class="font-weight-light">{{ project.title }}</h1>
+            <h1 class="font-weight-light">{{ staticTitle }}</h1>
             <v-spacer></v-spacer>
             <v-btn 
                 class="mr-4"
@@ -144,9 +144,9 @@ let project = ref({
     descLevel: ''
 })
 
-onMounted(() => {
-    console.log('onMounted')
+let staticTitle = ref('')
 
+onMounted(() => {
     project.value = {
         id: null,
         title: '',
@@ -166,8 +166,7 @@ onMounted(() => {
     }
 
     project.value = projectStore.getProjectSelected()
-
-    console.log('oi: ', project.value)
+    staticTitle.value = project.value.title
 })
 
 let updateLoading = ref(false)

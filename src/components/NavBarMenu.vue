@@ -99,7 +99,7 @@
                 <v-divider class="my-2"></v-divider>
 
                 <v-list-item  
-                    @click="$emit('logout')"
+                    @click="onLogout"
                     class="cursor-pointer"
                     prepend-icon="mdi-logout"
                 >
@@ -124,6 +124,10 @@ let props = defineProps({
         type: String
     }
 })
+
+const emit = defineEmits(['logout'])
+
+const onLogout = () => emit('logout')
 
 const menuStore = useMenuStore()
 const userStore = useUserStore()
