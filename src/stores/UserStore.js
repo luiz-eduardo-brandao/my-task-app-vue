@@ -46,19 +46,35 @@ export const useUserStore = defineStore('user', () => {
     ])
 
     const checkUser = async () => { 
-        try {
-            if (localStorage.getItem('idUser')) {
-                const token = 'Bearer ' + localStorage.getItem('token')
-                // await userService.verifyToken(token)
-    
-                return true;
+        if (localStorage.getItem('idUser')) {
+            let idUser = localStorage.getItem('idUser')
+            let token = localStorage.getItem('token')
+            let refreshToken = localStorage.getItem('refreshToken')
+
+            let verifyTokenModel = {
+                idUser,
+                token : token ? token : '',
+                refreshToken: refreshToken ? refreshToken : ''
             }
 
-            return false
+            try {
+                var response = await userService.verifyToken(verifyTokenModel)
 
-        } catch (error) {
-            throw error;
+                if (response.token) {
+                    localStorage.setItem('token', response.token)
+                }
+
+                if (response.refreshToken) {
+                    localStorage.setItem('refreshToken', response.refreshToken)
+                }
+
+                return true
+            } catch (error) {
+                return false
+            }
         }
+
+        return false
     }
 
     async function login(loginRequest, isPermanent) {
@@ -69,13 +85,11 @@ export const useUserStore = defineStore('user', () => {
 
         if (user.isPermanent) {
             // localStorage.setItem('user', JSON.stringify(user.value))
-            // setToken(user.value.token)
 
             localStorage.setItem('idUser', user.id)
             localStorage.setItem('token', user.token)
+            localStorage.setItem('refreshToken', user.refreshToken)
         }
-
-        console.log('setUser: ',user)
 
         setUser(user)
 
@@ -86,33 +100,32 @@ export const useUserStore = defineStore('user', () => {
         user.value = null
         isAuthenticated.value = false
 
-        localStorage.removeItem('token')
         localStorage.removeItem('idUser')
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
     }   
 
     async function loadUserData() {
-        console.log('loadTaskData')
-
         if (localStorage.getItem('idUser')) {
-            let idUser = localStorage.getItem('idUser')
-    
-            var user = await userService.getById(idUser)
-    
-            user.isPermanent = true
-            console.log('setUser: ',user)
-            
-            setUser(user)
+            try {
+                let idUser = localStorage.getItem('idUser')
+        
+                var user = await userService.getById(idUser)
+        
+                user.isPermanent = true
+                
+                setUser(user)    
+            } catch (error) {
+                
+            }
         }
     }
 
     const setIsAuth = (auth) => isAuthenticated.value = auth
 
     const setUser = (newUser) => {
-        console.log('aqui ?')
-
-        if (newUser == null) throw 'Usuário inválido'
-
-        console.log(newUser)
+        if (newUser == null)
+            throw 'Usuário inválido'
 
         user.value = newUser
 

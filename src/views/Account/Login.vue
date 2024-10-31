@@ -170,6 +170,8 @@ const login = async () => {
         //     image: '@/assets/user-edu.jpg'
         // }
     } catch (error) {
+        console.log('error: ', error)
+
         snackStore.setSnackBar({
             time: 5000,
             color: 'red-darken-3',

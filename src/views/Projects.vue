@@ -62,7 +62,7 @@
                                 <v-btn 
                                 variant="tonal" 
                                 color="primary"
-                                @click.stop="callRoute('/tasks')"
+                                @click.stop="openTasksFilter(item)"
                                 >Tarefas</v-btn>
                             </td>
                             <td>
@@ -87,17 +87,16 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProjectStore } from '@/stores/ProjectStore'
 
+import { useTaskStore } from '@/stores/TaskStore'
+const taskStore = useTaskStore()
+
+
 import TimeLine from '@/components/TimeLine.vue'
 import FormProject from '@/components/project/FormProject.vue'
 
 const projectStore = useProjectStore()
 
-let projects = computed(() => {
-    var oi = projectStore.getProjectsList()
-    console.log('projects oi: ', oi)
-
-    return projectStore.getProjectsList()
-})
+let projects = computed(() =>  projectStore.getProjectsList())
 
 const router = useRouter()
 
@@ -113,11 +112,15 @@ let isFormProjectOpen = ref(false)
 let labelFormProject = ref('')
 
 const openEditProject = (project) => {
-    console.log('openEditProject', project)
-
     projectStore.setProjectSelected(project)
 
     callRoute('/project')
+}
+
+const openTasksFilter = (item) => {
+    taskStore.setTasksListFilter(t => t.projectTitle == item.title)
+
+    callRoute('/tasks')
 }
 
 const openProjectForm = (label, project) => {
@@ -132,8 +135,6 @@ const openProjectForm = (label, project) => {
 }
 
 const openTimeline = (project) => {
-    console.log('get project timeline by id: ', project.id)
-
     projectTimeline.value = [
         {
             id: 1,
@@ -162,32 +163,6 @@ const closeTimeline = () => {
     projectTimeline.value = []
 }
 
-let projects2 = ref([
-    {
-        id: 1,
-        title: 'Projeto Planejamento - AR23',
-        description: 'Projeto Validações AR - 2024 - Outubro',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        level: 2 
-    },
-    {
-        id: 2,
-        title: 'Projeto Desenvolvimento - AR23',
-        description: 'Projeto Validações AR - 2024 - Outubro',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        level: 4
-    },
-    {
-        id: 3,
-        title: 'Projeto Validações - AR23',
-        description: 'Projeto Validações AR - 2024 - Outubro',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        level: 3 
-    },
-])
 
 let headers = ref([
         {

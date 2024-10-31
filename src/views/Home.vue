@@ -180,8 +180,8 @@
                           </v-chip>
                         </td>
                         <td>{{ item.timeConsumed }}</td>
-                        <td>{{ item.startDate }}</td>
-                        <td>{{ item.endDate }}</td>
+                        <td>{{ item.startedAt }}</td>
+                        <td>{{ item.finishedAt }}</td>
                         
                     </tr>
                 </tbody>
@@ -228,60 +228,7 @@ const openProject = (project) => {
 
 let isDialogOpen = ref(false)
 
-let projects = computed(() => {
-    var oi = projectStore.getProjectsList()
-    console.log('projects oi: ', oi)
-
-    return projectStore.getProjectsList()
-})
-
-let recentProjects = ref([
-    {
-        id: 1,
-        title: 'Projeto Planejamento - AR23',
-        description: 'Planejamento projetos 2024 - Outubro',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        image: 'https://images.pexels.com/photos/28518085/pexels-photo-28518085.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        level: 2 
-    },
-    {
-        id: 2,
-        title: 'Projeto Desenvolvimento - AR23',
-        description: 'Desenvolvimento atividades',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        image: 'https://images.pexels.com/photos/28770118/pexels-photo-28770118/free-photo-of-futuro.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        level: 4
-    },
-    {
-        id: 3,
-        title: 'Projeto Validações - AR23',
-        description: 'Validações',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        image: 'https://images.pexels.com/photos/28751787/pexels-photo-28751787/free-photo-of-cena-de-rua-encantadora-em-hanoi-vietna.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        level: 3 
-    },
-    {
-        id: 3,
-        title: 'Projeto Validações - AR23',
-        description: 'Validações',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        image: 'https://images.pexels.com/photos/28751787/pexels-photo-28751787/free-photo-of-cena-de-rua-encantadora-em-hanoi-vietna.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        level: 3 
-    },
-    {
-        id: 3,
-        title: 'Projeto Validações - AR23',
-        description: 'Validações',
-        userName: 'Eduardo',
-        createdAt: '26/09/2024 9:40 PM',
-        image: 'https://images.pexels.com/photos/28751787/pexels-photo-28751787/free-photo-of-cena-de-rua-encantadora-em-hanoi-vietna.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        level: 3 
-    },
-])
+let projects = computed(() => projectStore.getProjectsList())
 
 let taskList = computed(() => taskStore.getTasksList())
 
@@ -294,7 +241,7 @@ let taskListHeader = ref([
     { key: 'title', title: 'Tarefa' },
     { key: 'projectTitle', title: 'Projeto' },
     { key: 'timeConsumed', title: 'Tempo Gasto' },
-    { key: 'startDate', title: 'Início' },
+    { key: 'startedAt', title: 'Início' },
 ])
 
 </script>

@@ -330,16 +330,12 @@ watch(projectSelected, () => {
 })
 
 const openEditTask = (task) => {
-    console.log('openEditTask', task)
-
     store.setTaskSelected(task)
 
     callRoute('/task')
 }
 
 const filterTasks = (projectName) => {
-    console.log('projectName: ', projectName)
-
     store.setTasksListFilter(t => t.projectTitle == projectName)
 }
 

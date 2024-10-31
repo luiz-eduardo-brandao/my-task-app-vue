@@ -108,14 +108,15 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta?.authorize) {
         const userStore = useUserStore()
 
-        await userStore.loadUserData()
+        const isTokenValid = await userStore.checkUser();
 
-        if (userStore.getIsAuthenticated()) {
-            const isTokenValid = await userStore.checkUser();
+        if (isTokenValid) {
+            await userStore.loadUserData()
 
-            if (isTokenValid) {
+            if (userStore.getIsAuthenticated()) 
+            {
                 const taskStore = useTaskStore()
-                let projectStore = useProjectStore()
+                const projectStore = useProjectStore()
                 
                 await projectStore.loadProjectData()
                 await taskStore.loadTaskData()
@@ -128,10 +129,11 @@ router.beforeEach(async (to, from, next) => {
                     next();
                     return
                 }
-
             }
         }
         
+        userStore.logout()
+
         next({ name: 'login'})
         return
     }

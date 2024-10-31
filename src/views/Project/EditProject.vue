@@ -79,12 +79,13 @@
                                 v-ripple
                                 v-for="item in project.tasks"
                                 :key="item.id"
+                                @click="openEditTask(item)"
                             >
                                 <td>{{ item.id }}</td>
                                 <td>{{ item.title }}</td>
                                 <td>{{ item.timeConsumed }}</td>
-                                <td>{{ item.startDate }}</td>
-                                <td>{{ item.endDate }}</td>
+                                <td>{{ item.startedAt }}</td>
+                                <td>{{ item.finishedAt }}</td>
                             </tr>
                         </tbody>
                     </v-table>
@@ -107,7 +108,7 @@
                         color="red"
                         :loading="deleteLoading"
                         size="large"
-                        :disabled="saveLoading"
+                        :disabled="updateLoading"
                         @click="deleteProject"
                     >Excluir</v-btn>
                 </v-col>
@@ -120,6 +121,9 @@
 import { ref, onMounted } from 'vue' 
 import { useRouter } from 'vue-router'
 import { useProjectStore } from '@/stores/ProjectStore'
+
+import { useTaskStore } from '@/stores/TaskStore'
+const taskStore = useTaskStore()
 
 import projectService from '@/services/projectService'
 
@@ -161,8 +165,11 @@ onMounted(() => {
     const projectStore = useProjectStore()
     var result = projectStore.getProjectSelected()
 
+    console.log('getProjectSelected', result)
+
     if (result == null) {
         callRoute('/projects')
+        return
     }
 
     project.value = projectStore.getProjectSelected()
@@ -184,6 +191,12 @@ let taskListHeader = ref([
     { key: 'endDate', title: 'Fim' },
 ])
 
+const openEditTask = (task) => {
+    taskStore.setTaskSelected(task)
+
+    callRoute('/task')
+}
+
 const update = async () => {
     updateLoading.value = true
 
@@ -193,8 +206,6 @@ const update = async () => {
         description: project.value.description,
         level: project.value.level,
     }
-
-    console.log('updateProjectInputModel:', updateProjectInputModel)
 
     try {
         var response = await projectService.update(updateProjectInputModel)
@@ -219,8 +230,6 @@ const update = async () => {
 
 const deleteProject = async () => {
     deleteLoading.value = true
-
-    console.log('selected project:', project.value.id)
 
     try {
         var response = await projectService.delete(project.value.id)

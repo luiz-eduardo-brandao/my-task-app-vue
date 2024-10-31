@@ -164,6 +164,7 @@ onMounted(() => {
 
     if (result == null) {
         callRoute('/tasks')
+        return
     }
 
     task.value = taskStore.getTaskSelected()
@@ -181,8 +182,6 @@ const update = async () => {
         title: task.value.title,
         description: task.value.description,
     }
-
-    console.log('updateTaskInputModel:', updateTaskInputModel)
 
     try {
         var response = await taskService.update(updateTaskInputModel)

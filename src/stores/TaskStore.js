@@ -70,8 +70,6 @@ export const useTaskStore = defineStore('task', () => {
     })
 
     async function loadTaskData() {
-        console.log('loadTaskData')
-
         let idUser = localStorage.getItem('idUser')
 
         var tasksList = await taskService.getAllByUserId(idUser)

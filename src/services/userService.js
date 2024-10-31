@@ -5,23 +5,12 @@ export default {
         const { data } = await HTTPClient.put('/users/login', payload)
         return data
     },
-    verifyToken: async token => {
-        const { data } = await HTTPClient.post('/users/verify', {
-            headers: {
-                Authorization: token
-            }
-        })
-        
+    verifyToken: async payload => {
+        const { data } = await HTTPClient.put('/users/verifyToken', payload)
         return data
     },
     getById: async id => {
-        let token = localStorage.getItem('token')
-        
-        const { data } = await HTTPClient.get('/users/' + id, {
-            headers: {
-                Authorization: 'Bearer ' + token
-            }
-        })
+        const { data } = await HTTPClient.get('/users/' + id)
         return data
     },
 }

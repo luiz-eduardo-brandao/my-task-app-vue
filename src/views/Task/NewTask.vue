@@ -133,10 +133,8 @@ const submit = async () => {
     loading.value = true
 
     try {
-        
         const userStore = useUserStore()
         let user = userStore.getUser()
-        console.log('user: ', user)
 
         let createTaskInputModel = {
             title: title.value,
@@ -146,8 +144,6 @@ const submit = async () => {
         }
 
         var response = await taskService.create(createTaskInputModel)
-
-        console.log('create task resp: ', response)
 
         snackStore.setSnackBar({
             time: 5000,
