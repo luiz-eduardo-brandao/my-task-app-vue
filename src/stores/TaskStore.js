@@ -77,6 +77,14 @@ export const useTaskStore = defineStore('task', () => {
         setTasksList(tasksList)
     }
 
+    async function startTask(idTask) {
+        await taskService.start(idTask)
+    }
+
+    async function finishTask(idTask) {
+        await taskService.finish(idTask)
+    }
+
     return {
         getListType,
         setTaskSelected,
@@ -87,7 +95,9 @@ export const useTaskStore = defineStore('task', () => {
         setTasksListFilter,
         getTasksListFiltered,
         removeTasksListFilter,
-        loadTaskData
+        loadTaskData,
+        startTask,
+        finishTask
     }
 
 })

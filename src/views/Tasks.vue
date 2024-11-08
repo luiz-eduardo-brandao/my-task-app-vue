@@ -73,7 +73,8 @@
                     class="mx-auto my-12 cursor-pointer"
                     v-ripple
                     max-width="374"
-                    min-height="574"
+                    min-height="610"
+                    max-height="610"
                 >
                     <v-img
                     height="180"
@@ -81,46 +82,37 @@
                     cover
                     ></v-img>
 
+                    
                     <v-card-item>
-                    <v-card-title>{{ item.title  }}</v-card-title>
+                        <div v-if="item.startedAt && item.finishedAt">
+                            <span class="me-1">Tarefa Concluída!</span>
+                            <v-icon
+                            color="green"
+                            icon="mdi-check-circle-outline"
+                            size="small"
+                            ></v-icon>
+                        </div>
+                    </v-card-item>
 
-                    <v-card-subtitle>
-                        <span class="me-1">{{ item.projectTitle }}</span>
+                    <v-card-item>
+                        <v-card-title>{{ item.title  }}</v-card-title>
+
+                        <v-card-subtitle>
+                            <span class="me-1">{{ item.projectTitle }}</span>
 
                             <v-icon
                             color="error"
-                            icon="mdi-fire-circle"
+                            icon="mdi-email"
                             size="small"
                             ></v-icon>
                         </v-card-subtitle>
-                        </v-card-item>
+                    </v-card-item>
 
                         <v-card-text>
-                        <!-- <v-row
-                            align="center"
-                            class="mx-0"
-                        >
-                            <v-rating
-                            :model-value="4.5"
-                            color="amber"
-                            density="compact"
-                            size="small"
-                            half-increments
-                            readonly
-                            ></v-rating>
-
-                            <div class="text-grey ms-4">
-                            4.5 (413)
+                            <div class="my-2 mt-3 text-subtitle-1">
+                                <p>Descrição:</p>
+                                {{ item.description }}
                             </div>
-                        </v-row> -->
-
-                        <div class="my-2 mt-3 text-subtitle-1">
-                           <p>Descrição:</p>
-                        <!-- </div>
-
-                        <div> -->
-                            {{ item.description }}
-                        </div>
                         </v-card-text>
 
                         <v-divider class="mx-4 mb-1"></v-divider>
@@ -152,14 +144,16 @@
                                 class="" 
                                 base-color="blue" 
                                 append-icon="mdi-play-outline"
-                                @click.stop=""
+                                @click.stop="startTask(item.id)"
+                                :disabled="item.startedAt"
                                 >Iniciar</v-btn>
                                 
                                 <v-btn 
                                 class="" 
                                 base-color="blue" 
                                 prepend-icon="mdi-pause"
-                                @click.stop=""
+                                @click.stop="finishTask(item.id)"
+                                :disabled="item.finishedAt"
                                 >Parar</v-btn>
                             </v-row>
                         <!-- <v-btn
@@ -268,7 +262,8 @@
                                                     color="primary"
                                                     class="rounded-7 ma-2"
                                                     variant="text"
-                                                    :disabled="item.startDate"
+                                                    :disabled="item.startedAt"
+                                                    @click.stop="startTask(item.id)"
                                                 ></v-btn>
                                             </td>
                                             <td>
@@ -277,7 +272,8 @@
                                                     color="red"
                                                     class="rounded-7 ma-2"
                                                     variant="text"
-                                                    :disabled="item.endDate"
+                                                    :disabled="item.finishedAt"
+                                                    @click.stop="finishTask(item.id)"
                                                 ></v-btn>
                                             </td>
                                             <!-- </td> -->
@@ -289,6 +285,7 @@
                                                 class="rounded-7 ma-2"
                                                 variant="text"
                                                 @click.stop="openTimeline(item)"
+                                                :disabled="true"
                                                 ></v-btn>
                                             </td>
                                         </tr>
@@ -322,6 +319,16 @@ let listType = computed(() => store.getListType())
 let projects = computed(() => projectStore.getProjectsList())
 
 let projectSelected = ref(null)
+
+const startTask = async (idTask) => {
+    await store.startTask(idTask)
+    await store.loadTaskData()
+}
+
+const finishTask = async (idTask) => {
+    await store.finishTask(idTask)
+    await store.loadTaskData()
+}
 
 watch(projectSelected, () => {
     if (projectSelected.value != null && projectSelected.value != '') {

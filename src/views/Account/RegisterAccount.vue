@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" class="h-75">
+    <v-row justify="center" class="mb-10">
         <v-col
             align-self="center"
             cols="12"
@@ -41,11 +41,76 @@
                             label="Telefone" 
                         ></v-text-field>
 
-                        <v-text-field
-                            class="mt-3" 
-                            label="Data de Nascimento" 
-                        ></v-text-field>
-                
+                        
+                        {{ date }}
+
+                        <v-menu 
+                            v-model="menu"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+							offset-y
+                        >
+                            <template v-slot:activator="{ props }">
+                                <!-- <v-btn class="mr-7 pa-3" icon v-bind="props">
+                                    <v-icon icon="mdi-bell-outline"></v-icon>
+                                </v-btn> -->
+                                <v-text-field
+									label="Data de Nascimento"
+									prepend-inner-icon="mdi-calendar"
+                                    v-bind="props"
+									@click:clear="date = ''"
+									v-model="date"
+								></v-text-field>
+                            </template>
+                            <v-confirm-edit 
+                                v-model="date"
+                                @save="toggleMenu()" 
+                                @cancel="toggleMenu()" 
+                            >
+                                <template v-slot:default="{ model: proxyModel, actions }">
+                                    <v-date-picker v-model="proxyModel.value">
+                                        <template v-slot:actions>
+                                            <component :is="actions" ></component>
+                                        </template>
+                                    </v-date-picker>
+                                </template>
+                            </v-confirm-edit>
+                            <!-- <v-date-picker v-model="date" show-adjacent-months></v-date-picker> -->
+                        </v-menu>
+                        <!-- <v-menu
+							v-model="menu"
+							:close-on-content-click="false"
+							:return-value.sync="date"
+							transition="scale-transition"
+							offset-y
+							max-width="290px"
+							min-width="290px"
+						>
+							<template v-slot:activator="{ on, attrs }">
+								<v-text-field
+									hide-details
+									label="Data Emissão"
+									outlined
+									flat
+									prepend-inner-icon="mdi-calendar"
+									clearable
+									v-bind="attrs"
+									v-on="on"
+									@click:clear="date = ''"
+									v-model="computedDateFormatted"
+								></v-text-field>
+							</template>
+                            <v-confirm-edit v-model="date">
+                                <template v-slot:default="{ model: proxyModel, actions }">
+                                    <v-date-picker v-model="proxyModel.value">
+                                    <template v-slot:actions>
+                                        <component :is="actions"></component>
+                                    </template>
+                                    </v-date-picker>
+                                </template>
+                            </v-confirm-edit>
+						</v-menu> -->
+                        
                         <v-text-field 
                             label="Email" 
                             placeholder="Digite o email..."
@@ -82,3 +147,28 @@
         </v-col>
     </v-row>
 </template>
+
+<script setup>
+import { ref, computed } from 'vue'
+
+let menu = ref(false)
+let date = ref(null)
+
+function toggleMenu() {
+    menu.value = false
+}
+
+let computedDateFormatted =  computed(() => {
+    if (!date) 
+        return ''
+    return 
+        formatDate(date)
+})
+
+function formatDate(date) {
+    if (!date) return null
+
+    const [year, month, day] = date.split('-')
+    return `${day}/${month}/${year}`
+}
+</script>

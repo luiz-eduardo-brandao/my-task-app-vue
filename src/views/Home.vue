@@ -160,6 +160,7 @@
                 </thead>
                 <tbody>
                     <tr 
+                        @click="openEditTask(item)"
                         class="cursor-pointer table-line"
                         v-ripple
                         v-for="item in taskList"
@@ -224,6 +225,11 @@ const openProject = (project) => {
   projectStore.setProjectSelected(project)
 
   callRoute('/project')
+}
+
+const openEditTask = (task) => {
+  taskStore.setTaskSelected(task)
+  callRoute('/task')
 }
 
 let isDialogOpen = ref(false)

@@ -33,8 +33,8 @@
         </template>
       </NavBar>
 
-      <v-main>
-        <v-container max-width="90%" min-height="h-screen" class="">
+      <v-main class="d-flex flex-column min-h-screen">
+        <v-container max-width="90%" class="flex-grow-1">
             <RouterView />
         </v-container>
         
@@ -89,3 +89,15 @@ const logout = () => {
 }
 
 </script>
+
+<style>
+.v-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.v-main .v-container {
+  flex: 1;
+}
+</style>
